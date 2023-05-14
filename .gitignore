@@ -1,0 +1,8 @@
+__pycache__/
+/venv/
+/.idea/
+db/*
+*.json
+*.db
+*.log
+error.txt
