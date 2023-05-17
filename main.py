@@ -8,12 +8,21 @@ from scrapy.utils.log import configure_logging
 
 
 lib.InitDir()           #создаем каталоги
-lib.InitDB("GenreBook")
+lib.InitDB("GenreBook") #Инициализация БД
 configure_logging()     #Штука для логов
 
 #массив Ссылка, Жанр
 #Все варианты находятся в "GenreList.csv"
-genreList = [("https://www.livelib.ru/genre/%D0%9C%D0%B0%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9-%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%BC", "Магический реализм")]
+#Нужные жанры необходимо добавить в файл GenreToParse.txt в формате 'Ссылка;НазваниеЖанра'
+
+genreList = []
+
+with (open("GenreToParse.txt","r") as fs):
+    line = fs.readline()
+    
+    while(line):
+        genreList.append((line.split(";")[0],line.split(";")[1].strip()))
+        line = fs.readline()
 
 
 
@@ -21,9 +30,12 @@ parserConfig = CrawlerRunner(settings={'DOWNLOAD_DELAY':0,'ROBOTSTXT_OBEY':False
 
 @defer.inlineCallbacks
 def genreParser():
-    #for mainGenre in genreList:
-    #    yield parserConfig.crawl(genre.GenreSpider,mainGenre[0],mainGenre[1])
+    #Сборк кнги
+    for mainGenre in genreList:
+        yield parserConfig.crawl(genre.GenreSpider,mainGenre[0],mainGenre[1])
 
+
+    #Сбор карточек книг
     connection = sqlite3.connect("db/book.db")
     cursor = connection.cursor()
     cursor.execute('SELECT url, genre FROM GenreBook')

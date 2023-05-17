@@ -62,8 +62,6 @@ class GenreSpider(scrapy.Spider):
         self.startUrl = startUrl
         self.genreName = name
         
-        
-        
 
     def start_requests(self):
         lib.InitDB("GenreBook")

@@ -1,6 +1,9 @@
 import sqlite3
 import os
 
+#"Библиотека" для вынесения общих методов
+
+
 def InitDir():
     if(not os.path.exists("db")):
         os.mkdir("db")
