@@ -36,14 +36,14 @@ def genreParser():
 
 
     #Сбор карточек книг
-    connection = sqlite3.connect("db/book.db")
-    cursor = connection.cursor()
-    cursor.execute('SELECT url, genre FROM GenreBook')
-    query = cursor.fetchall()
-    cursor.close()
-    connection.close()
-
-    yield parserConfig.crawl(book.BookSpider,query)
+    #connection = sqlite3.connect("db/book.db")
+    #cursor = connection.cursor()
+    #cursor.execute('SELECT url, genre FROM GenreBook')
+    #query = cursor.fetchall()
+    #cursor.close()
+    #connection.close()
+#
+    #yield parserConfig.crawl(book.BookSpider,query)
 
 genreParser()
        
