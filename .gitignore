@@ -6,3 +6,4 @@ db/*
 *.db
 *.log
 error.txt
+/output/*

@@ -10,14 +10,9 @@ def InitDir():
     if(not os.path.exists("db/log")):
         os.mkdir("db/log")
 
-def WriteLog(name, resp):
-
-        if(resp.status != 200):
-            with open(f"db/{name}Log.txt",'a',encoding='utf8') as fp:
-                fp.write(f"{resp.status}\t{resp.url}\t{resp.request.headers.get('Referer', None)}\n")
-        else:
-            with open(f"db/{name}Success.txt",'a',encoding='utf8') as fp:
-                fp.write(f"{resp.url}\n")
+def WriteLog(resp,genre):
+    with open(f"db/log/BookLog.txt",'a',encoding='utf8') as fp:
+        fp.write(f"{resp.url};{genre} - {resp.status}\n")
 
 
 def InitDB(name):
@@ -56,3 +51,13 @@ def AddBookToDB(book):
                     (book.id, book.sourceLink, book.title, book.author, book.type_book, book.description, book.genres_from_book, book.main_genre, book.number_of_pages, book.language, book.age_limit, book.publisher, book.publication_year, book.circulations, book.rating, book.number_of_reviews, book.number_of_users_read, book.number_of_users_planning, book.ISBN, book.parsing_date))
     connection.commit()
     connection.close()
+
+def initCookieHeader(fileName):
+    dic = {}
+    with open(fileName,"r") as fs:
+        line = fs.readline()
+    
+        while(line):
+            dic[line.split('\":\"')[0]] = line.split('\":\"')[1].strip()
+            line = fs.readline()
+    return dic

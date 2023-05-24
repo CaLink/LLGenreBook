@@ -1,10 +1,9 @@
 import lib
 import sqlite3
-from LiveLibGenre.spiders import genre, book
+from LiveLibGenre.spiders import genre, book, User_Info
 from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
-
 
 
 lib.InitDir()           #создаем каталоги
@@ -15,13 +14,22 @@ configure_logging()     #Штука для логов
 #Все варианты находятся в "GenreList.csv"
 #Нужные жанры необходимо добавить в файл GenreToParse.txt в формате 'Ссылка;НазваниеЖанра'
 
-genreList = []
+#genreList = []
 
-with (open("GenreToParse.txt","r") as fs):
+#with (open("GenreToParse.txt","r") as fs):
+#    line = fs.readline()
+    
+#    while(line):
+#        genreList.append((line.split(";")[0],line.split(";")[1].strip()))
+#        line = fs.readline()
+
+urlList = []
+
+with open("OptionstUrlToParse.txt","r") as fs:
     line = fs.readline()
     
     while(line):
-        genreList.append((line.split(";")[0],line.split(";")[1].strip()))
+        urlList.append((line.split(";")[0],line.split(";")[1].strip()))
         line = fs.readline()
 
 
@@ -29,10 +37,14 @@ with (open("GenreToParse.txt","r") as fs):
 parserConfig = CrawlerRunner(settings={'DOWNLOAD_DELAY':0,'ROBOTSTXT_OBEY':False})
 
 @defer.inlineCallbacks
+def getUser():
+    yield parserConfig.crawl(User_Info.UserInfo)
+
+@defer.inlineCallbacks
 def genreParser():
     #Сборк кнги
-    for mainGenre in genreList:
-        yield parserConfig.crawl(genre.GenreSpider,mainGenre[0],mainGenre[1])
+    #for mainGenre in genreList:
+    #    yield parserConfig.crawl(genre.GenreSpider,mainGenre[0],mainGenre[1])
 
 
     #Сбор карточек книг
@@ -43,10 +55,10 @@ def genreParser():
     #cursor.close()
     #connection.close()
 #
-    #yield parserConfig.crawl(book.BookSpider,query)
+    yield parserConfig.crawl(book.BookSpider,urlList)
 
 genreParser()
-       
+#getUser()
 
 reactor.run()
 
